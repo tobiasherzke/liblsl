@@ -1,5 +1,4 @@
 name: Windows make
-
 on:
   push:
     branches: [ main, master, development ]
