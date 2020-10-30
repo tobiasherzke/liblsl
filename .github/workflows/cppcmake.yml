@@ -10,19 +10,18 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: bash.exe --login -eo pipefail "{0}"
+        shell: msys2 {0}
     env:
       MSYSTEM: "MINGW64"
       CHERE_INVOKING: 1
     name: MSYS2 MINGW64
     steps:
     - uses: actions/checkout@v2
-    - name: Set up shell
-      run: echo ::add-path::C:\msys64\usr\bin\
-      shell: pwsh
+    - uses: msys2/setup-msys2@v2
+      with:
+        release: false
     - name: Print system version
-      run: |
-        uname
+      run: uname
     - run: mkdir -p build
     - run: cd build && cmake -G"MSYS Makefiles" ..
     - run: |
