@@ -30,7 +30,7 @@ jobs:
         - {name: "ubuntu-18.04", shell: "bash",  os: "ubuntu-18.04"}
         - {name: "ubuntu-16.04", shell: "bash",  os: "ubuntu-16.04"}
         - {name: "windows-x64",  shell: "bash",  os: "windows-latest", cmake_extra: "-T v140,host=x86"}
-        - {name: "mingw64",      shell: "msys2", os: "windows-latest", cmake_extra: "-G'MSYS Makefiles'"}
+        - {name: "mingw64",      shell: "msys2", os: "windows-latest", cmake_extra: "-G'MSYS Makefiles' -DLSL_UNITTESTS=OFF -DLSL_BUILD_EXAMPLES=OFF"}
         - {name: "windows-32",   shell: "bash",  os: "windows-latest", cmake_extra: "-T v140,host=x86 -A Win32"}
         - {name: "macOS-latest", shell: "bash",  os: "macOS-latest"}
     
@@ -100,13 +100,12 @@ jobs:
     - name: unit tests (internal functions)
       run: install/bin/lsl_test_internal --order rand --wait-for-keypress never --durations yes
       timeout-minutes: 5
-      #if: ${{matrix.config.shell != 'msys2'}}
+      if: ${{matrix.config.shell != 'msys2'}}
     
     - name: unit tests (exported functions)
       run: install/bin/lsl_test_exported --order rand --wait-for-keypress never --durations yes
       timeout-minutes: 5
-      if: ${{ success() || failure() }}
-      #if: ${{ (success() || failure()) &&  matrix.config.shell != 'msys2' }}
+      if: ${{ (success() || failure()) &&  matrix.config.shell != 'msys2' }}
     - name: upload to release page
       if: github.event_name == 'release'
       env:
