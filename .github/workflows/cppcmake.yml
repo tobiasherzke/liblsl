@@ -46,8 +46,8 @@ jobs:
         release: true
         install: >-
           cmake
-          make
-          g++
+          mingw64/mingw-w64-x86_64-gcc
+          msys/make
     - name: Configure CMake
       run: |
            if [[ "${{ matrix.config.os }}" == "ubuntu-20.04" ]]; then
