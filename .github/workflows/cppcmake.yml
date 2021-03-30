@@ -26,13 +26,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {name: "ubuntu-20.04", shell: "bash",  os: "ubuntu-20.04",   cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"}
-        - {name: "ubuntu-18.04", shell: "bash",  os: "ubuntu-18.04"}
-        - {name: "ubuntu-16.04", shell: "bash",  os: "ubuntu-16.04"}
-        - {name: "windows-x64",  shell: "bash",  os: "windows-latest", cmake_extra: "-T v140,host=x86"}
-        - {name: "mingw64",      shell: "msys2", os: "windows-latest", cmake_extra: "-G'MSYS Makefiles' -DLSL_UNITTESTS=OFF -DLSL_BUILD_EXAMPLES=OFF"}
-        - {name: "windows-32",   shell: "bash",  os: "windows-latest", cmake_extra: "-T v140,host=x86 -A Win32"}
-        - {name: "macOS-latest", shell: "bash",  os: "macOS-latest"}
+        - {name: "ubuntu-20.04", shell: "bash",  tests: "ON",  os: "ubuntu-20.04",   cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"}
+        - {name: "ubuntu-18.04", shell: "bash",  tests: "ON",  os: "ubuntu-18.04"}
+        - {name: "ubuntu-16.04", shell: "bash",  tests: "ON",  os: "ubuntu-16.04"}
+        - {name: "windows-x64",  shell: "bash",  tests: "ON",  os: "windows-latest", cmake_extra: "-T v140,host=x86"}
+        - {name: "mingw64",      shell: "msys2", tests: "OFF", os: "windows-latest", cmake_extra: "-G'MSYS Makefiles'"}
+        - {name: "windows-32",   shell: "bash",  tests: "ON",  os: "windows-latest", cmake_extra: "-T v140,host=x86 -A Win32"}
+        - {name: "macOS-latest", shell: "bash",  tests: "ON",  os: "macOS-latest"}
     
     defaults:
       run:
@@ -53,8 +53,8 @@ jobs:
            cmake -S . -B build \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_INSTALL_PREFIX=${PWD}/install \
-                -DLSL_UNITTESTS=ON \
-                -DLSL_BUILD_EXAMPLES=ON \
+                -DLSL_UNITTESTS=${{matrix.config.tests}} \
+                -DLSL_BUILD_EXAMPLES=${{matrix.config.tests}} \
                 -DCPACK_PACKAGE_DIRECTORY=${PWD}/package \
                 -Dlslgitrevision=${{ github.sha }} \
                 -Dlslgitbranch=${{ github.ref }} \
@@ -100,12 +100,12 @@ jobs:
     - name: unit tests (internal functions)
       run: install/bin/lsl_test_internal --order rand --wait-for-keypress never --durations yes
       timeout-minutes: 5
-      if: ${{matrix.config.shell != 'msys2'}}
+      if: ${{matrix.config.tests == 'ON'}}
     
     - name: unit tests (exported functions)
       run: install/bin/lsl_test_exported --order rand --wait-for-keypress never --durations yes
       timeout-minutes: 5
-      if: ${{ (success() || failure()) &&  matrix.config.shell != 'msys2' }}
+      if: ${{ (success() || failure()) &&  matrix.config.tests == 'ON' }}
     - name: upload to release page
       if: github.event_name == 'release'
       env:
