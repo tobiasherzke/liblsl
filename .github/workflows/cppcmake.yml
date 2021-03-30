@@ -44,6 +44,9 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         release: true
+        install: >-
+          cmake
+
     - name: Configure CMake
       run: |
            if [[ "${{ matrix.config.os }}" == "ubuntu-20.04" ]]; then
