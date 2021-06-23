@@ -28,16 +28,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {name: "ubuntu-20.04", os: "ubuntu-20.04",   cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"}
-        - {name: "ubuntu-18.04", os: "ubuntu-latest",  docker: "ubuntu:18.04" }
-        - {name: "windows-x64",  os: "windows-latest", cmake_extra: "-T v140,host=x86"}
-        - {name: "windows-32",   os: "windows-latest", cmake_extra: "-T v140,host=x86 -A Win32"}
-        - {name: "macOS-latest", os: "macOS-latest"}
+        - {name: "windows-mingw",  os: "windows-latest", cmake_extra: '-G "MSYS Makefiles"'}
     
     # runs all steps in the container configured in config.docker or as subprocesses when empty
     container: ${{ matrix.config.docker }}
     steps:
     - uses: actions/checkout@v2
+    - uses: msys2/setup-msys2@v2
+      if: matrix.config.name == 'windows-mingw'
+      with:
+        release: false
     - name: set up build environment in container
       run: |
          apt update
@@ -62,7 +62,7 @@ jobs:
                 ${{ matrix.config.cmake_extra }} 
             echo ${PWD}
     - name: make
-      run: cmake --build build --target install --config Release -j
+      run: cmake --build build --target install --config Release -j --verbose
   
     - name: package
       run: |
