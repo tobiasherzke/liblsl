@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {name: "windows-mingw",  os: "windows-latest", cmake_extra: '-G "MSYS Makefiles"', shell: 'msys {0}'}
+        - {name: "windows-mingw",  os: "windows-latest", cmake_extra: '-G "MSYS Makefiles"', shell: 'msys2 {0}'}
     
     # runs all steps in the container configured in config.docker or as subprocesses when empty
     container: ${{ matrix.config.docker }}
