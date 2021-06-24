@@ -28,10 +28,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {name: "windows-mingw",  os: "windows-latest", cmake_extra: '-G "MSYS Makefiles"'}
+        - {name: "windows-mingw",  os: "windows-latest", cmake_extra: '-G "MSYS Makefiles"', shell: 'msys {0}'}
     
     # runs all steps in the container configured in config.docker or as subprocesses when empty
     container: ${{ matrix.config.docker }}
+    defaults:
+      run:
+        shell: ${{ matrix.config.shell }}
     steps:
     - uses: actions/checkout@v2
     - uses: msys2/setup-msys2@v2
@@ -45,14 +48,6 @@ jobs:
          python3 -m pip install cmake
       if: ${{ matrix.config.docker }}
 
-    - name: inspect g++
-      run: |
-           /C/ProgramData/chocolatey/bin/g++.exe --version
-           /C/ProgramData/chocolatey/bin/g++.exe -v
-           echo DLSL_LIBRARY_INFO_STR=\"git:c8e5abb6545d2334510f9f7e0d3c0f21cca967e5/branch:refs/heads/githubmingw/build:Release/compiler:GNU-8.1.0/link:SHARED\"
-           echo "const char*c=LSL_LIBRARY_INFO_STR;" >test.cpp
-           /C/ProgramData/chocolatey/bin/g++.exe -DLSL_LIBRARY_INFO_STR=\"git:c8e5abb6545d2334510f9f7e0d3c0f21cca967e5/branch:refs/heads/githubmingw/build:Release/compiler:GNU-8.1.0/link:SHARED\" -E test.cpp
-           /C/ProgramData/chocolatey/bin/g++.exe -DLSL_LIBRARY_INFO_STR=\"git:c8e5abb6545d2334510f9f7e0d3c0f21cca967e5/branch:refs/heads/githubmingw/build:Release/compiler:GNU-8.1.0/link:SHARED\" test.cpp
     - name: Configure CMake
       run: |
            if [[ "${{ matrix.config.os }}" == "ubuntu-20.04" ]]; then
