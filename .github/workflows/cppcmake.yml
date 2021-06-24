@@ -49,7 +49,9 @@ jobs:
       run: |
            /C/ProgramData/chocolatey/bin/g++.exe --version
            /C/ProgramData/chocolatey/bin/g++.exe -v
-
+           echo DLSL_LIBRARY_INFO_STR=\"git:c8e5abb6545d2334510f9f7e0d3c0f21cca967e5/branch:refs/heads/githubmingw/build:Release/compiler:GNU-8.1.0/link:SHARED\"
+           echo DLSL_LIBRARY_INFO_STR >test.cpp
+           /C/ProgramData/chocolatey/bin/g++.exe -DLSL_LIBRARY_INFO_STR=\"git:c8e5abb6545d2334510f9f7e0d3c0f21cca967e5/branch:refs/heads/githubmingw/build:Release/compiler:GNU-8.1.0/link:SHARED\" -E test.cpp
     - name: Configure CMake
       run: |
            if [[ "${{ matrix.config.os }}" == "ubuntu-20.04" ]]; then
