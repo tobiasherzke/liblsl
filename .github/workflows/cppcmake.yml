@@ -112,7 +112,7 @@ jobs:
     - name: unit tests (exported functions)
       run: install/bin/lsl_test_exported --order rand --wait-for-keypress never --durations yes
       timeout-minutes: 5
-      if: ${{ success() || failure() }}
+      if: ${{ (success() || failure()) && (matrix.config.name != 'windows-mingw') }}
     - name: upload to release page
       if: github.event_name == 'release'
       env:
