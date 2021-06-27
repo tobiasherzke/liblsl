@@ -116,7 +116,7 @@ jobs:
     - name: unit tests (exported functions with valgrind)
       run: sudo apt-get -y install valgrind && valgrind install/bin/lsl_test_exported --order rand --wait-for-keypress never --durations yes
       timeout-minutes: 5
-      if: ${{ (matrix.config.name != 'ubuntu-18.04') || (matrix.config.name != 'ubuntu-20.04') }}
+      if: ${{ (matrix.config.name == 'ubuntu-18.04') || (matrix.config.name == 'ubuntu-20.04') }}
     - name: upload to release page
       if: github.event_name == 'release'
       env:
