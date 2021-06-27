@@ -114,7 +114,7 @@ jobs:
       timeout-minutes: 5
       if: ${{ (success() || failure()) && (matrix.config.name != 'windows-mingw') }}
     - name: unit tests (exported functions with valgrind)
-      run: apt install valgrind && valgrind install/bin/lsl_test_exported --order rand --wait-for-keypress never --durations yes
+      run: sudo apt-get -y install valgrind && valgrind install/bin/lsl_test_exported --order rand --wait-for-keypress never --durations yes
       timeout-minutes: 5
       if: ${{ (matrix.config.name != 'ubuntu-18.04') || (matrix.config.name != 'ubuntu-20.04') }}
     - name: upload to release page
